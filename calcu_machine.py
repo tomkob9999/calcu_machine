@@ -1,7 +1,7 @@
 # calcu_machine
 #
 # Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.1.1
+# Version: 1.1.2
 # Author: Tomio Kobayashi
 # Last Update: 2024/3/27
 
@@ -17,7 +17,7 @@ class calcu_machine:
         self.equations = [sp.Eq(sp.sympify(eq), targets[i]) for i, eq in enumerate(self.equations_str)]
         self.is_silent = is_silent
         if not self.is_silent:
-            print("**************************")
+#             print("**************************")
             print("Given System of Equations:", self.equations)
 
     def chop_after_last_underscore(string):
@@ -87,59 +87,14 @@ class calcu_machine:
                     new_vars.append(der1)
                     new_equation += " + " + str(grads[i]) + "*" + der1
                     
-                for n in new_target_vars:
-                    self.variables.append(n)
-                for n in new_vars:
-                    self.variables.append(n)
-                variables = sp.symbols(self.variables)
-                new_eq = sp.Eq(sp.sympify(new_equation), sp.sympify(der_target))
-                self.equations.append(new_eq)
-                if not self.is_silent:
-                    print("*")
-                    print("New Equation:", new_eq)
-                self.targets.append(der_target)
-
-is_silent = True                
-# Linear
-print("===== Linear =========")
-equations = ["2 * x + 3 * y + 1 * z", "4 * x + 1 * y + 8 * z"]
-targets = [20, 30]
-calc = calcu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
-s = calc.solve_function({"z": 3})
-print("Solution:", s)
-calc.derive_derivatives()
-s = calc.solve_function({"z": 3})
-print("Solution with Derivatives:", s)
-
-# Quadratic
-print("===== Quadratic =========")
-equations = ["2 * x + 3 * y + 1 * z", "4 * x + 1 * y**2 + 8 * z"]
-targets = [20, 30]
-calc = calcu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
-s = calc.solve_function({"z": 3})
-print("Solution:", s)
-calc.derive_derivatives()
-s = calc.solve_function({"z": 3})
-print("Solution with Derivatives:", s)
-
-# Division
-print("===== Division =========")
-equations = ["1/x+1/y+1/z", "4 * x + 1 * y + 8 * z"]
-targets = [20, 30]
-calc = calcu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
-s = calc.solve_function({"z": 3})
-print("Solution:", s)
-calc.derive_derivatives()
-s = calc.solve_function({"z": 3})
-print("Solution with Derivatives:", s)
-
-# Log
-print("===== Log =========")
-equations = ["2 * log(x) + 3 * y + 1 * z", "4 * x + 1 * y + 8 * z"]
-targets = [20, 30]
-calc = calcu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
-s = calc.solve_function({"z": 3})
-print("Solution:", s)
-calc.derive_derivatives()
-s = calc.solve_function({"z": 3})
-print("Solution with Derivatives:", s)
+            for n in new_target_vars:
+                self.variables.append(n)
+            for n in new_vars:
+                self.variables.append(n)
+            variables = sp.symbols(self.variables)
+            new_eq = sp.Eq(sp.sympify(new_equation), sp.sympify(der_target))
+            self.equations.append(new_eq)
+            if not self.is_silent:
+                print("*")
+                print("New Equation:", new_eq)
+            self.targets.append(der_target)
