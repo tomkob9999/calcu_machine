@@ -1,9 +1,9 @@
 # calcu_machine
 #
 # Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.1.2
+# Version: 1.1.3
 # Author: Tomio Kobayashi
-# Last Update: 2024/3/27
+# Last Update: 2024/3/28
 
 import sympy as sp
 import numpy as np
@@ -14,7 +14,8 @@ class calcu_machine:
         self.variables = variables
         self.targets = targets
         self.equations_str = equations_str
-        self.equations = [sp.Eq(sp.sympify(eq), targets[i]) for i, eq in enumerate(self.equations_str)]
+#         self.equations = [sp.Eq(sp.sympify(eq), targets[i]) for i, eq in enumerate(self.equations_str)]
+        self.equations = [sp.Eq(sp.sympify(eq), sp.sympify(targets[i])) for i, eq in enumerate(self.equations_str)]
         self.is_silent = is_silent
         if not self.is_silent:
 #             print("**************************")
@@ -41,7 +42,7 @@ class calcu_machine:
             return
         
         variables = sp.symbols(self.variables)
-        eqs = [sp.Eq(sp.sympify(k), v) for k, v in knowns.items()]
+        eqs = [sp.Eq(v, sp.sympify(k)) for k, v in knowns.items()]
         equations = self.equations + eqs
         if not self.is_silent:
             print("*")
@@ -71,8 +72,11 @@ class calcu_machine:
             for inp in inputs:
                 solution = sp.solve(f, v)
                 str_sol = str(solution).replace("[", "").replace("]", "")
-                fff = sp.sympify(str_sol)
-                partial_derivative = sp.diff(fff, inp) 
+                if str_sol == "":
+                    partial_derivative = "0"
+                else:
+                    fff = sp.sympify(str_sol)
+                    partial_derivative = sp.diff(fff, inp) 
                 grads.append(partial_derivative)
             new_target_vars = []
             new_vars = []
@@ -86,7 +90,7 @@ class calcu_machine:
                     der1 = str(v) + "_" + str(inp)
                     new_vars.append(der1)
                     new_equation += " + " + str(grads[i]) + "*" + der1
-                    
+                
             for n in new_target_vars:
                 self.variables.append(n)
             for n in new_vars:
