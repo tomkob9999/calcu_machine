@@ -1,7 +1,7 @@
 # calcu_machine
 #
 # Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.1.6
+# Version: 1.1.7
 # Author: Tomio Kobayashi
 # Last Update: 2024/3/28
 
@@ -75,9 +75,12 @@ class calcu_machine:
    
      
  
-    def derive_derivatives(self):
+    def derive_derivatives(self, tot_deriv_input=[]):
+
         variables = sp.symbols(self.variables)
         num_knowns = len(self.variables) - len(self.equations)
+        if len(tot_deriv_input) != 0 and len(tot_deriv_input) != num_knowns:
+            print("Number of derived input params must be", num_knowns)
 
         function_sets = [(tuple(f), tuple([v for v in variables if v not in f])) for f in list(combinations(variables, num_knowns))]
 #         print(function_sets)
@@ -86,6 +89,9 @@ class calcu_machine:
         new_variables = []
         new_equations = []
         for i, func in enumerate(function_sets):
+            
+            add_equation = all([str(f) in tot_deriv_input for f in func[0]])
+            
             solution = sp.solve(self.equations, func[1]) 
             str_sol = str(solution).replace("[", "").replace("]", "")
             gradiants = {}
@@ -108,7 +114,6 @@ class calcu_machine:
                             print(fff)
                             continue
                             
-#             print("gradiants", gradiants)
             for k, v in gradiants.items():
                 tot = ""
                 base = ""
@@ -117,19 +122,19 @@ class calcu_machine:
                         base = str(kk)
                         tot = "(" + str(vv) + ")"
                     else:
-                        tot = tot + " + (" + str(kk) + ")*" + str(vv) + "_" + base
-                        if total_notyet:
-                            new_variables.append(str(v) + "_" + base)
-                if total_notyet:
+                        tot = tot + " + (" + str(vv) + ")*" + str(kk) + "_" + base
+                        if (len(tot_deriv_input) == 0 and total_notyet) or add_equation:
+                            new_variables.append(str(kk) + "_" + base)
+                if (len(tot_deriv_input) == 0 and total_notyet) or add_equation:
                     tot2 = (k + "_" + base, tot)
                 tot = k + "_" + base + " = " + tot
                 if not self.is_silent:
                     print("TOTAL DERIVATIVE", tot)
-                if total_notyet:
+                if (len(tot_deriv_input) == 0 and total_notyet) or add_equation:
                     new_equations.append(tot2)
                     new_variables.append(k + "_" + base)
 
-            if total_notyet:
+            if (len(tot_deriv_input) == 0 and total_notyet) or add_equation:
                 for n in new_variables:
                     self.variables.append(n)
                 variables = sp.symbols(self.variables)
@@ -149,8 +154,8 @@ print("===== Linear =========")
 equations = ["2 * x + 3 * y + 1 * z", "4 * x + 1 * y + 8 * z"]
 targets = [20, 30]
 calc = calcu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
-s = calc.solve_function({"z": 3})
-print("Solution:", s)
-calc.derive_derivatives()
-s = calc.solve_function({"z": 3})
-print("Solution with Derivatives:", s)
+# s = calc.solve_function({"z": 3})
+# print("Solution:", s)
+calc.derive_derivatives(["y"])
+# s = calc.solve_function({"z": 3})
+# print("Solution with Derivatives:", s)
