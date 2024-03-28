@@ -1,15 +1,15 @@
-# calcu_machine
+# calculu_machine
 #
 # Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.1.7
+# Version: 1.1.8
 # Author: Tomio Kobayashi
-# Last Update: 2024/3/28
+# Last Update: 2024/3/29
 
 import sympy as sp
 import numpy as np
 from itertools import combinations
 
-class calcu_machine:
+class calculu_machine:
     
     def __init__(self, equations_str, targets, variables, is_silent=False):
         self.variables = variables
@@ -95,6 +95,7 @@ class calcu_machine:
             solution = sp.solve(self.equations, func[1]) 
             str_sol = str(solution).replace("[", "").replace("]", "")
             gradiants = {}
+            not_too_complex = True
             if str_sol != "":
                 for inp in func[0]:
                     if str_sol == "":
@@ -110,9 +111,18 @@ class calcu_machine:
                                     gradiants[str(k)] = {}
                                 gradiants[str(k)][str(inp)] = p
                         else:
-                            print("No equation found for each of output", func[1])
-                            print(fff)
-                            continue
+                            not_too_complex = False
+                            for i, k in enumerate(func[1]):
+                                ff_val = fff[0][i] if isinstance(fff[0], tuple) else fff[i]
+                                p = sp.diff(ff_val, inp)
+                                if not self.is_silent:
+                                    print("partial derivative d" + str(k) + "/d" + str(inp) +"|f" + (str(func[0]) if len(func[0]) > 1 else "(" + str(func[0][0]) + ")"), ":", p)
+                                if str(k) not in gradiants:
+                                    gradiants[str(k)] = {}
+                                gradiants[str(k)][str(inp)] = p  
+#                             print("No equation found for each of output", func[1])
+#                             print(fff)
+#                             continue
                             
             for k, v in gradiants.items():
                 tot = ""
@@ -134,17 +144,25 @@ class calcu_machine:
                     new_equations.append(tot2)
                     new_variables.append(k + "_" + base)
 
-            if (len(tot_deriv_input) == 0 and total_notyet) or add_equation:
-                for n in new_variables:
-                    self.variables.append(n)
-                variables = sp.symbols(self.variables)
-                for ne in new_equations:
-                    new_eq = sp.Eq(sp.sympify(ne[1]), sp.sympify(ne[0]))
-                    self.equations.append(new_eq)
-                    total_notyet = False
-                    if not self.is_silent:
-                        print("*")
-                        print("New Equation:", new_eq)
+            if ((len(tot_deriv_input) == 0 and total_notyet) or add_equation):
+                if not_too_complex:
+                    for n in new_variables:
+                        self.variables.append(n)
+                    variables = sp.symbols(self.variables)
+                    for ne in new_equations:
+                        new_eq = sp.Eq(sp.sympify(ne[1]), sp.sympify(ne[0]))
+                        test_same = sp.solve(self.equations) == sp.solve(self.equations+[new_eq])
+    #                     print("test_same", test_same)
+                        if not test_same:
+                            self.equations.append(new_eq)
+                            total_notyet = False
+                            if not self.is_silent:
+                                print("*")
+                                print("New Equation:", new_eq)
+                                print("*")
+                else:
+                    print("Cannot be added to system as too complex", new_equations)
+            not_too_complex = True
 
 
 is_silent = False          
@@ -153,9 +171,10 @@ is_silent = False
 print("===== Linear =========")
 equations = ["2 * x + 3 * y + 1 * z", "4 * x + 1 * y + 8 * z"]
 targets = [20, 30]
-calc = calcu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
+calc = calculu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
 # s = calc.solve_function({"z": 3})
 # print("Solution:", s)
+calc.derive_derivatives(["y"])
 calc.derive_derivatives(["y"])
 # s = calc.solve_function({"z": 3})
 # print("Solution with Derivatives:", s)
