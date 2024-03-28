@@ -1,7 +1,7 @@
 # calcu_machine
 #
 # Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.1.3
+# Version: 1.1.4
 # Author: Tomio Kobayashi
 # Last Update: 2024/3/28
 
@@ -10,6 +10,32 @@ import numpy as np
 from itertools import combinations
 
 class calcu_machine:
+    
+    
+    def find_equation(inputs, output, equations):
+        """
+        Solve the system of equations for the specified output variable
+        in terms of the input variables.
+
+        :param inputs: List of symbols representing the input variables.
+        :param output: The symbol representing the output variable.
+        :param equations: List of equations constituting the system.
+        :return: Expression representing the output variable in terms of input variables.
+        """
+        # Solve the system for the output variable
+        print("inputs", inputs)
+        print("output", output)
+        print("equations", equations)
+        solution = solve(equations, output)
+        print("solution", solution)
+
+        # Extract the solution for the output variable
+        if output in solution:
+            return solution[output]
+        else:
+            # In case the solution is directly returned (e.g., for single variable solve)
+            return solution
+    
     def __init__(self, equations_str, targets, variables, is_silent=False):
         self.variables = variables
         self.targets = targets
@@ -48,57 +74,102 @@ class calcu_machine:
             print("*")
             print("Calculated System of Equations:", equations)
         unknowns = [t for t in self.variables if t not in knowns]
-        solution = sp.solve(equations, self.variables)
         
-        if isinstance(solution, dict):
-            derivs = [k for k, v in solution.items() if "_" in str(k)]
-            if len(derivs) > 0:
-                pair_combinations = list(combinations(derivs, 2))
-                for p in [pair for pair in pair_combinations if str(pair[0]).split("_")[len(str(pair[0]).split("_"))-1] == str(pair[1]).split("_")[len(str(pair[1]).split("_"))-1]]:
-                    solution[calcu_machine.chop_after_last_underscore(str(p[0])) + "_" + calcu_machine.chop_after_last_underscore(str(p[1]))] = solution[p[0]]/solution[p[1]]
-                
-        return solution
-    
+        try:
+            solution = sp.solve(equations, self.variables)
+
+            if isinstance(solution, dict):
+                derivs = [k for k, v in solution.items() if "_" in str(k)]
+                if len(derivs) > 0:
+                    pair_combinations = list(combinations(derivs, 2))
+                    for p in [pair for pair in pair_combinations if str(pair[0]).split("_")[len(str(pair[0]).split("_"))-1] == str(pair[1]).split("_")[len(str(pair[1]).split("_"))-1]]:
+                        solution[calcu_machine.chop_after_last_underscore(str(p[0])) + "_" + calcu_machine.chop_after_last_underscore(str(p[1]))] = solution[p[0]]/solution[p[1]]
+
+            return solution
+        
+        except NotImplementedError as e:
+            print(f"Caught an error: {e}")
+            return None
+   
+     
+ 
     def derive_derivatives(self):
         variables = sp.symbols(self.variables)
         num_knowns = len(self.variables) - len(self.equations)
+
+#         print("variables", variables)
+        function_sets = [(tuple(f), tuple([v for v in variables if v not in f])) for f in list(combinations(variables, num_knowns))]
+#         print(function_sets)
         
-        f = sp.sympify(self.equations_str[0])
-        inputs = [self.variables[i] for i in range(num_knowns)]
-        for v in variables:
-            if str(v) in inputs:
-                continue
-            grads = []
-            for inp in inputs:
-                solution = sp.solve(f, v)
-                str_sol = str(solution).replace("[", "").replace("]", "")
-                if str_sol == "":
-                    partial_derivative = "0"
-                else:
-                    fff = sp.sympify(str_sol)
-                    partial_derivative = sp.diff(fff, inp) 
-                grads.append(partial_derivative)
-            new_target_vars = []
-            new_vars = []
-            new_equation = ""
-            for i, inp in enumerate(inputs):
-                if i == 0:
-                    der_target = str(v) + "_" + str(inp)
-                    new_target_vars.append(der_target)
-                    new_equation += str(grads[i])
-                else:
-                    der1 = str(v) + "_" + str(inp)
-                    new_vars.append(der1)
-                    new_equation += " + " + str(grads[i]) + "*" + der1
-                
-            for n in new_target_vars:
-                self.variables.append(n)
-            for n in new_vars:
-                self.variables.append(n)
-            variables = sp.symbols(self.variables)
-            new_eq = sp.Eq(sp.sympify(new_equation), sp.sympify(der_target))
-            self.equations.append(new_eq)
-            if not self.is_silent:
-                print("*")
-                print("New Equation:", new_eq)
-            self.targets.append(der_target)
+        total_notyet = True
+        new_variables = []
+        new_equations = []
+        for i, func in enumerate(function_sets):
+            solution = sp.solve(self.equations, func[1]) 
+            str_sol = str(solution).replace("[", "").replace("]", "")
+            gradiants = {}
+            if str_sol != "":
+                for inp in func[0]:
+                    if str_sol == "":
+                        continue
+                    else:
+                        fff = sp.sympify(str_sol)
+                        if isinstance(fff, dict):
+                            for k, v in fff.items():
+                                p = sp.diff(v, inp)
+                                if not self.is_silent:
+                                    print("partial derivative d" + str(k) + "/d" + str(inp) +"|f" + (str(func[0]) if len(func[0]) > 1 else "(" + str(func[0][0]) + ")"), ":", p)
+                                if str(k) not in gradiants:
+                                    gradiants[str(k)] = {}
+                                gradiants[str(k)][str(inp)] = p
+                        else:
+                            print("No equation found for each outout for output", func[1])
+                            print(fff)
+                            continue
+                            
+#             print("gradiants", gradiants)
+            for k, v in gradiants.items():
+                tot = ""
+                base = ""
+                for kk, vv in v.items():
+                    if base == "":
+                        base = str(kk)
+                        tot = "(" + str(vv) + ")"
+                    else:
+                        tot = tot + " + (" + str(kk) + ")*" + str(vv) + "_" + base
+                        if total_notyet:
+                            new_variables.append(str(v) + "_" + base)
+                if total_notyet:
+                    tot2 = (k + "_" + base, tot)
+                tot = k + "_" + base + " = " + tot
+                if not self.is_silent:
+                    print("TOTAL DERIVATIVE", tot)
+                if total_notyet:
+                    new_equations.append(tot2)
+                    new_variables.append(k + "_" + base)
+
+            if total_notyet:
+                for n in new_variables:
+                    self.variables.append(n)
+                variables = sp.symbols(self.variables)
+                for ne in new_equations:
+                    new_eq = sp.Eq(sp.sympify(ne[1]), sp.sympify(ne[0]))
+                    self.equations.append(new_eq)
+                    total_notyet = False
+                    if not self.is_silent:
+                        print("*")
+                        print("New Equation:", new_eq)
+
+
+is_silent = False          
+
+# Linear
+print("===== Linear =========")
+equations = ["2 * x + 3 * y + 1 * z", "4 * x + 1 * y + 8 * z"]
+targets = [20, 30]
+calc = calcu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
+s = calc.solve_function({"z": 3})
+print("Solution:", s)
+calc.derive_derivatives()
+s = calc.solve_function({"z": 3})
+print("Solution with Derivatives:", s)
