@@ -56,7 +56,7 @@ class calculu_machine:
                 if len(derivs) > 0:
                     pair_combinations = list(combinations(derivs, 2))
                     for p in [pair for pair in pair_combinations if str(pair[0]).split("_")[len(str(pair[0]).split("_"))-1] == str(pair[1]).split("_")[len(str(pair[1]).split("_"))-1]]:
-                        solution[calcu_machine.chop_after_last_underscore(str(p[0])) + "_" + calcu_machine.chop_after_last_underscore(str(p[1]))] = solution[p[0]]/solution[p[1]]
+                        solution[calculu_machine.chop_after_last_underscore(str(p[0])) + "_" + calculu_machine.chop_after_last_underscore(str(p[1]))] = solution[p[0]]/solution[p[1]]
                 solution = [solution]
             elif len(self.variables) == len(solution[0]):
                 sols = []
@@ -85,9 +85,10 @@ class calculu_machine:
         function_sets = [(tuple(f), tuple([v for v in variables if v not in f])) for f in list(combinations(variables, num_knowns))]
         
         total_notyet = True
-        new_variables = []
-        new_equations = []
         for i, func in enumerate(function_sets):
+#             print("func", func)
+            new_variables = []
+            new_equations = []
             add_equation = any([str(f) in tot_deriv_input for f in func[0]])
             
             solution = sp.solve(self.equations, func[1]) 
@@ -109,7 +110,8 @@ class calculu_machine:
                                     gradiants[str(k)] = {}
                                 gradiants[str(k)][str(inp)] = p
                         else:
-                            not_too_complex = False
+                            if isinstance(fff[0], tuple):
+                                not_too_complex = False
                             for i, k in enumerate(func[1]):
                                 ff_val = fff[0][i] if isinstance(fff[0], tuple) else fff[i]
                                 p = sp.diff(ff_val, inp)
