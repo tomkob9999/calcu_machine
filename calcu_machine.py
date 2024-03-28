@@ -1,7 +1,7 @@
 # calcu_machine
 #
 # Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.1.5
+# Version: 1.1.6
 # Author: Tomio Kobayashi
 # Last Update: 2024/3/28
 
@@ -49,7 +49,7 @@ class calcu_machine:
         unknowns = [t for t in self.variables if t not in knowns]
         
         try:
-            print("Solving", self.variables)
+            print("Solving for", self.variables)
             solution = sp.solve(equations, self.variables)
             if isinstance(solution, dict):
                 derivs = [k for k, v in solution.items() if "_" in str(k)]
@@ -57,7 +57,16 @@ class calcu_machine:
                     pair_combinations = list(combinations(derivs, 2))
                     for p in [pair for pair in pair_combinations if str(pair[0]).split("_")[len(str(pair[0]).split("_"))-1] == str(pair[1]).split("_")[len(str(pair[1]).split("_"))-1]]:
                         solution[calcu_machine.chop_after_last_underscore(str(p[0])) + "_" + calcu_machine.chop_after_last_underscore(str(p[1]))] = solution[p[0]]/solution[p[1]]
-
+                solution = [solution]
+            elif len(self.variables) == len(solution[0]):
+                sols = []
+                for ss in solution:
+                    sol = {}
+                    for i, s in enumerate(ss):
+                        sol[self.variables[i]] = s
+                    sols.append(sol)
+                solution = sols
+                
             return solution
         
         except NotImplementedError as e:
@@ -70,7 +79,6 @@ class calcu_machine:
         variables = sp.symbols(self.variables)
         num_knowns = len(self.variables) - len(self.equations)
 
-#         print("variables", variables)
         function_sets = [(tuple(f), tuple([v for v in variables if v not in f])) for f in list(combinations(variables, num_knowns))]
 #         print(function_sets)
         
