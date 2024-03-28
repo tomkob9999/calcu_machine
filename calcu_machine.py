@@ -11,40 +11,13 @@ from itertools import combinations
 
 class calcu_machine:
     
-    
-    def find_equation(inputs, output, equations):
-        """
-        Solve the system of equations for the specified output variable
-        in terms of the input variables.
-
-        :param inputs: List of symbols representing the input variables.
-        :param output: The symbol representing the output variable.
-        :param equations: List of equations constituting the system.
-        :return: Expression representing the output variable in terms of input variables.
-        """
-        # Solve the system for the output variable
-        print("inputs", inputs)
-        print("output", output)
-        print("equations", equations)
-        solution = solve(equations, output)
-        print("solution", solution)
-
-        # Extract the solution for the output variable
-        if output in solution:
-            return solution[output]
-        else:
-            # In case the solution is directly returned (e.g., for single variable solve)
-            return solution
-    
     def __init__(self, equations_str, targets, variables, is_silent=False):
         self.variables = variables
         self.targets = targets
         self.equations_str = equations_str
-#         self.equations = [sp.Eq(sp.sympify(eq), targets[i]) for i, eq in enumerate(self.equations_str)]
         self.equations = [sp.Eq(sp.sympify(eq), sp.sympify(targets[i])) for i, eq in enumerate(self.equations_str)]
         self.is_silent = is_silent
         if not self.is_silent:
-#             print("**************************")
             print("Given System of Equations:", self.equations)
 
     def chop_after_last_underscore(string):
