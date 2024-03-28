@@ -1,7 +1,7 @@
 # calcu_machine
 #
 # Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.1.4
+# Version: 1.1.5
 # Author: Tomio Kobayashi
 # Last Update: 2024/3/28
 
@@ -76,8 +76,8 @@ class calcu_machine:
         unknowns = [t for t in self.variables if t not in knowns]
         
         try:
+            print("Solving", self.variables)
             solution = sp.solve(equations, self.variables)
-
             if isinstance(solution, dict):
                 derivs = [k for k, v in solution.items() if "_" in str(k)]
                 if len(derivs) > 0:
@@ -123,7 +123,7 @@ class calcu_machine:
                                     gradiants[str(k)] = {}
                                 gradiants[str(k)][str(inp)] = p
                         else:
-                            print("No equation found for each outout for output", func[1])
+                            print("No equation found for each of output", func[1])
                             print(fff)
                             continue
                             
