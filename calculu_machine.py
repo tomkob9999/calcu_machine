@@ -83,14 +83,12 @@ class calculu_machine:
             print("Number of derived input params must be", num_knowns)
 
         function_sets = [(tuple(f), tuple([v for v in variables if v not in f])) for f in list(combinations(variables, num_knowns))]
-#         print(function_sets)
         
         total_notyet = True
         new_variables = []
         new_equations = []
         for i, func in enumerate(function_sets):
-            
-            add_equation = all([str(f) in tot_deriv_input for f in func[0]])
+            add_equation = any([str(f) in tot_deriv_input for f in func[0]])
             
             solution = sp.solve(self.equations, func[1]) 
             str_sol = str(solution).replace("[", "").replace("]", "")
@@ -144,7 +142,7 @@ class calculu_machine:
                     new_equations.append(tot2)
                     new_variables.append(k + "_" + base)
 
-            if ((len(tot_deriv_input) == 0 and total_notyet) or add_equation):
+            if (len(tot_deriv_input) == 0 and total_notyet) or (add_equation and total_notyet):
                 if not_too_complex:
                     for n in new_variables:
                         self.variables.append(n)
@@ -152,7 +150,6 @@ class calculu_machine:
                     for ne in new_equations:
                         new_eq = sp.Eq(sp.sympify(ne[1]), sp.sympify(ne[0]))
                         test_same = sp.solve(self.equations) == sp.solve(self.equations+[new_eq])
-    #                     print("test_same", test_same)
                         if not test_same:
                             self.equations.append(new_eq)
                             total_notyet = False
@@ -168,13 +165,17 @@ class calculu_machine:
 is_silent = False          
 
 # Linear
-print("===== Linear =========")
-equations = ["2 * x + 3 * y + 1 * z", "4 * x + 1 * y + 8 * z"]
-targets = [20, 30]
-calc = calculu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
-# s = calc.solve_function({"z": 3})
-# print("Solution:", s)
-calc.derive_derivatives(["y"])
-calc.derive_derivatives(["y"])
-# s = calc.solve_function({"z": 3})
+print("===== 3 + 1 =========")
+# equations = ["a * x + b"]
+# equations = ["3 * a + 4 * x + 5 * b"]
+equations = ["3 * a + 4 * x + 5 * b**2"]
+targets = ["y"]
+calc = calculu_machine(equations, targets, ["a", "b", "x", "y"], is_silent=is_silent) 
+s = calc.solve_function({"a": 3, "x": 3, "y":5})
+print("Solution:", s)
+calc.derive_derivatives("a")
+# calc.derive_derivatives("a")
+# calc.derive_derivatives("a")
+# s = calc.solve_function({"a": 3, "x": 3, "y":5, "x": 3, "y":5})
 # print("Solution with Derivatives:", s)
+            
