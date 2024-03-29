@@ -5,4 +5,6 @@ The library finds total derivatives (also partials as by-products) from multivar
 
 ### Sample output
 
-![Uploading derives.png…]()
+![derives](https://github.com/tomkob9999/calculu_machine/assets/96751911/77db6e85-9a66-4a56-9f91-e95c552351ab)
+
+
