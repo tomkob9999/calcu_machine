@@ -9,7 +9,7 @@ I belive the total derivatives are generally treated as obescure objects shadowe
 
 Observations:
 
-| # of variables (1) | # of Equations (2)|  # of Outputs as function (2)| # of Inputs as function (3) | # of Subsystems (functions) (4)| # Partial Derivatives (5)| # Total Derivatives (6)|
+| # of variables (1) | # of Equations (2)|  # of Outputs as function | # of Inputs as function (3) | # of Subsystems (functions) (4)| # Partial Derivatives (5)| # Total Derivatives (6)|
 |----------:|----------:|----------:|----------:|----------:|----------:|----------:|
 | |  | (2) | (1)-(2) | (1) choose (2) |  (2) * (3) * (4) | (2)|
 
