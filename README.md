@@ -15,6 +15,9 @@ Expected properties from observation:
 
 Note: the number of total derivative equations match the number of the original equations.  While the total functions can be derivated for each output of each function, only the number of the original equations of them are independent and they appear in each function.  Therefore, total derivatives from the first function are added to the system.
 
+Higher drivatives can be calculated by executing derive_derivatives() method multiple times as the privious derivatives are merely treated as scalers.
+
+
 ### Sample output
 
 ![derives](https://github.com/tomkob9999/calculu_machine/assets/96751911/77db6e85-9a66-4a56-9f91-e95c552351ab)
