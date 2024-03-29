@@ -8,6 +8,8 @@ Sympy is used as the derivative calculation engine.  No integrals are used unlik
 
 I belive the total derivatives are generally treated as obescure objects shadowed by partial derivatives.  Here partial derivatives are treated as merely coefficients within total derivatives and generated as by-products within the process.  They also reside in the functional domain (I call subsystems) of the whole system whereas the total derivatives reside globally within the whole system.  Therefore, they can be used to derive scaler values by the system.
 
+In regular math courses, the differential equations are taught using exponential functions from the beginning to the end.  Here exponential patterns are not treated separately from other functions of linear or polynomial or else.  They are inversion of log function, which is integral of division.  Log can be used as input function and the inversion is derived as exponential function as way of calculation of system of equations.
+
 Observed patterns:
 
 | # of variables (1) | # of Equations (2)|  # of Outputs as Function | # of Inputs as Function (3) | # of Subsystems (functions) (4)| # Partial Derivatives (5)| # Total Derivatives (6)|
