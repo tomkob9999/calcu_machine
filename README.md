@@ -11,7 +11,7 @@ Expected properties from observation:
 
 | # of variables (1) | # of Equations (2)|  # of Outputs as function | # of Inputs as function (3) | # of Subsystems (functions) (4)| # Partial Derivatives (5)| # Total Derivatives (6)|
 |----------:|----------:|----------:|----------:|----------:|----------:|----------:|
-| |  | (2) | (1)-(2) | (1) choose (2) |  (2) * (3) * (4) | (2)|
+| |  | =(2) | =(1)-(2) | ={(1) choose (2)} |  = (2) * (3) * (4) | =(2)|
 
 Note: the number of total derivative equations match the number of the original equations.  While the total functions can be derivated for each output of each function, only the number of the original equations of them are independent and they appear in each function.  Therefore, total derivatives from the first function are added to the system.
 
