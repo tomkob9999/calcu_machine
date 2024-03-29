@@ -13,7 +13,7 @@ Expected properties from observation:
 |----------:|----------:|----------:|----------:|----------:|----------:|----------:|
 | |  | (2) | (1)-(2) | (1) choose (2) |  (2) * (3) * (4) | (2)|
 
-Note: the total derivative equations match the number of the original equations.  While the total functions can be derivated for each output of each function, the number of the original equations of them are independent and they appear in each function.  Therefore, total derivatives from the first function are added to the system.
+Note: the number of total derivative equations match the number of the original equations.  While the total functions can be derivated for each output of each function, only the number of the original equations of them are independent and they appear in each function.  Therefore, total derivatives from the first function are added to the system.
 
 ### Sample output
 
