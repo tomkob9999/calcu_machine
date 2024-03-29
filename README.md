@@ -7,7 +7,7 @@ Sympy is used as the derivative calculation engine.  No integrals are used unlik
 
 I belive the total derivatives are generally treated as obescure objects shadowed by partial derivatives.  I consider partial derivatives are merely coefficients within total derivatives and generated as by-products within the process.  They also reside in the function domain of the system whereas the total derivatives reside globally within the system.  Therefore, they can be used to derive scalar values by the system.
 
-Observations:
+Expected properties from observation:
 
 | # of variables (1) | # of Equations (2)|  # of Outputs as function | # of Inputs as function (3) | # of Subsystems (functions) (4)| # Partial Derivatives (5)| # Total Derivatives (6)|
 |----------:|----------:|----------:|----------:|----------:|----------:|----------:|
