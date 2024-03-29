@@ -1,6 +1,6 @@
 ## Calculu Machine
 
-(Experimental lab)
+(Experimental Lab)
 
 The library finds total derivatives (also partials as by-products) from multivariate system of equations of no derivatives.  Then it generates the new system of equations differential equations, and solve them from given inputs.
 
@@ -21,8 +21,7 @@ Higher drivatives can be calculated by executing derive_derivatives() method inc
 
 ### Sample Execution
 
-![exec2](https://github.com/tomkob9999/calculu_machine/assets/96751911/b1ba8b80-fed0-4b9e-ad11-b5dc50ce9072)
-
+![exec](https://github.com/tomkob9999/calculu_machine/assets/96751911/252fb176-20f3-4132-bfc7-cec9865c1c2c)
 
 ![derives2](https://github.com/tomkob9999/calculu_machine/assets/96751911/6faa20e1-5957-41f7-96ec-1a659e70f7fe)
 
