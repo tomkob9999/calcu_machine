@@ -1,7 +1,7 @@
 # calculu_machine
 #
 # Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.1.8
+# Version: 1.1.9
 # Author: Tomio Kobayashi
 # Last Update: 2024/3/29
 
@@ -51,7 +51,10 @@ class calculu_machine:
         try:
             print("Solving for", self.variables)
             solution = sp.solve(equations, self.variables)
-            if isinstance(solution, dict):
+#             print("solution", solution)
+            if len(solution) == 0:
+                print("No solution found")
+            elif isinstance(solution, dict):
                 derivs = [k for k, v in solution.items() if "_" in str(k)]
                 if len(derivs) > 0:
                     pair_combinations = list(combinations(derivs, 2))
@@ -147,7 +150,8 @@ class calculu_machine:
             if (len(tot_deriv_input) == 0 and total_notyet) or (add_equation and total_notyet):
                 if not_too_complex:
                     for n in new_variables:
-                        self.variables.append(n)
+                        if n not in self.variables:
+                            self.variables.append(n)
                     variables = sp.symbols(self.variables)
                     for ne in new_equations:
                         new_eq = sp.Eq(sp.sympify(ne[1]), sp.sympify(ne[0]))
@@ -169,8 +173,8 @@ is_silent = False
 # Linear
 print("===== 3 + 1 =========")
 # equations = ["a * x + b"]
-# equations = ["3 * a + 4 * x + 5 * b"]
-equations = ["3 * a + 4 * x + 5 * b**2"]
+equations = ["3 * a + 4 * x + 5 * b"]
+# equations = ["3 * a + 4 * x + 5 * b**2"]
 targets = ["y"]
 calc = calculu_machine(equations, targets, ["a", "b", "x", "y"], is_silent=is_silent) 
 s = calc.solve_function({"a": 3, "x": 3, "y":5})
@@ -180,4 +184,31 @@ calc.derive_derivatives("a")
 # calc.derive_derivatives("a")
 # s = calc.solve_function({"a": 3, "x": 3, "y":5, "x": 3, "y":5})
 # print("Solution with Derivatives:", s)
+
+
+print("===== 1 + 3 =========")
+equations = ["a * x + b", 
+             "3 * b", 
+             "a + x"]
+targets = ["y", "x", "b"]
+calc = calculu_machine(equations, targets, ["a", "b", "x", "y"], is_silent=is_silent) 
+s = calc.solve_function({"a": 3})
+print("Solution:", s)
+calc.derive_derivatives()
+s = calc.solve_function({"a": 3})
+print("Solution with Derivatives:", s)
+
+
+print("===== 2 + 2 =========")
+# equations = ["a * x + b", 
+#              "2 * a + 3 * b*2 + 4 * y"]
+equations = ["a + x + b", 
+             "2 * a + 3 * b + 4 * y"]
+targets = ["y", "x"]
+calc = calculu_machine(equations, targets, ["a", "b", "x", "y"], is_silent=is_silent) 
+s = calc.solve_function({"a": 3, "x": 3})
+print("Solution:", s)
+calc.derive_derivatives()
+s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
+print("Solution with Derivatives:", s)
             
