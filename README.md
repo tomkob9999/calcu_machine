@@ -31,10 +31,6 @@ Higher drivatives can be calculated by executing derive_derivatives() method inc
 
 
 
-On a personal side note, I don't see yet the clear difference between total derivatives and partial differential equations(PDE), and thus why PDE seems to focus on partial derivatives not total derivatives in the context of system of equations.  ChatGPT shed some lights, but it seems to be something I need to explore more.
-
-![pde](https://github.com/tomkob9999/calculu_machine/assets/96751911/e53d492e-0807-42e9-820a-e7d15bdfb5f3)
-
 
 
 
