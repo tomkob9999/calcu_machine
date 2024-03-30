@@ -1,9 +1,9 @@
 # calculu_machine
 #
 # Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.1.9
+# Version: 1.2.0
 # Author: Tomio Kobayashi
-# Last Update: 2024/3/29
+# Last Update: 2024/3/31
 
 import sympy as sp
 import numpy as np
@@ -49,9 +49,8 @@ class calculu_machine:
         unknowns = [t for t in self.variables if t not in knowns]
         
         try:
-            print("Solving for", self.variables)
+#             print("Solving for", self.variables)
             solution = sp.solve(equations, self.variables)
-#             print("solution", solution)
             if len(solution) == 0:
                 print("No solution found")
             elif isinstance(solution, dict):
@@ -89,7 +88,6 @@ class calculu_machine:
         
         total_notyet = True
         for i, func in enumerate(function_sets):
-#             print("func", func)
             new_variables = []
             new_equations = []
             add_equation = any([str(f) in tot_deriv_input for f in func[0]])
@@ -123,9 +121,6 @@ class calculu_machine:
                                 if str(k) not in gradiants:
                                     gradiants[str(k)] = {}
                                 gradiants[str(k)][str(inp)] = p  
-#                             print("No equation found for each of output", func[1])
-#                             print(fff)
-#                             continue
                             
             for k, v in gradiants.items():
                 tot = ""
@@ -155,8 +150,7 @@ class calculu_machine:
                     variables = sp.symbols(self.variables)
                     for ne in new_equations:
                         new_eq = sp.Eq(sp.sympify(ne[1]), sp.sympify(ne[0]))
-                        test_same = sp.solve(self.equations) == sp.solve(self.equations+[new_eq])
-                        if not test_same:
+                        if sp.solve(self.equations) != sp.solve(self.equations+[new_eq]) and all([sp.solve(new_eq) != sp.solve(e) for e in self.equations]):
                             self.equations.append(new_eq)
                             total_notyet = False
                             if not self.is_silent:
