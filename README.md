@@ -10,7 +10,7 @@ I belive the total derivatives are typically treated as obescure objects shadowe
 
 In regular math courses, the differential equations are taught using exponential functions from the beginning to the end.  Here exponential patterns are not treated separately from other functions of linear or polynomial or else.  They are inversion of log function, which is integral of reciprocal.  Log can be used as input function and the inversion is derived as exponential function as way of calculation of system of equations.
 
-Not all derivatives seem to be included in total derivatives.  They cannot be added in the system as they violate independence.  But they can be derived by simple calculations.  Given dx/dy, dy/dx = 1/(dx/dy).  Given dx/dy and dz/dy, dx/dz = (dx/dy)/(dz/dy)
+Not all derivatives seem to be included in total derivatives.  They cannot be added in the system as they violate independence.  But they can be derived by simple calculations.  Given dx/dy, dy/dx = 1/(dx/dy).  Given dx/dy and dz/dy, dx/dz = (dx/dy)/(dz/dy)  The approach seems simple and practical.  Once the total derivativess are derived, the rest is all pure good old algebra with system of equations.
 
 Observed patterns:
 
