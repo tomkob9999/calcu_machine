@@ -6,10 +6,6 @@ The library finds total derivatives (also partials as by-products) from multivar
 
 Sympy is used as the derivative calculation engine.  No integrals are used unlike regular differential equations.  Since integrals are inverse of derivatives, the system of equations calculates the inversions by its nature, and so in effect, it can solve the system of differential equations.
 
-I belive the total derivatives are typically treated as obescure objects shadowed by partial derivatives in college math classes.  Here, partial derivatives are treated as merely coefficients within total derivatives and generated just as by-products within the process.  They also reside in the functional domain (subsystems) of the whole system whereas the total derivatives reside globally within the whole system.  Therefore, they can be used to derive scaler values by the whole system.
-
-In regular math courses, the differential equations are taught using exponential functions from the beginning to the end.  Here exponential patterns are not treated separately from other functions of linear or polynomial or else.  They are inversion of log function, which is integral of reciprocal.  Log can be used as input function and the inversion is derived as exponential function as way of calculation of system of equations.
-
 Not all derivatives seem to be included in total derivatives.  They cannot be added in the system as they violate independence.  But they can be derived by simple calculations.  Given dx/dy, dy/dx = 1/(dx/dy).  Given dx/dy and dz/dy, dx/dz = (dx/dy)/(dz/dy)  The approach seems simple and practical.  Once the total derivativess are derived, the rest is all pure good old algebra with system of equations.
 
 Observed patterns:
