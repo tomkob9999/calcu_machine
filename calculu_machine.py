@@ -1,7 +1,7 @@
 # calculu_machine
 #
 # Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.2.3
+# Version: 1.2.4
 # Author: Tomio Kobayashi
 # Last Update: 2024/4/09
 
@@ -10,6 +10,9 @@ import numpy as np
 from itertools import combinations
 
 class calculu_machine:
+    
+    
+    # equations_str: equations that contain derivatives should be in the form of ["4*y_x + 3"] = ["z_x"]
     
     def __init__(self, equations_str, targets, variables, is_silent=False):
         self.variables = variables
@@ -184,9 +187,7 @@ class calculu_machine:
                 fff = sp.sympify(str_sol)
                 if isinstance(fff, dict):
                     for k, v in fff.items():
-                        print("fff", fff)
                         for oup in func[1]:
-                            print("oup", oup)
                             sol = sp.Eq(v, oup)
                             # Extract LHS and separate into terms
                             lhs = sol.lhs
@@ -257,26 +258,26 @@ s = calc.solve_function({"x": 3, "y":5, "y_x":2})
 print("Solution with Derivatives:", s)
 
 
-# # Linear
-# print("===== 2 + 1 =========")
-# equations = ["2 * x + 3 * y_x"]
-# targets = ["z_x"]
-# calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x"], is_silent=is_silent) 
-# calc.derive_orgvars()
-# print("calc.equations", calc.equations)
-# print("calc.variables", calc.variables)
-# s = calc.solve_function({"y": 3, "y_x": 2, "z_x": 6})
-# print("Solution with Derivatives:", s)
+# Linear
+print("===== 2 + 1 =========")
+equations = ["2 * x + 3 * y_x"]
+targets = ["z_x"]
+calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x"], is_silent=is_silent) 
+calc.derive_orgvars()
+print("calc.equations", calc.equations)
+print("calc.variables", calc.variables)
+s = calc.solve_function({"y": 3, "y_x": 2, "z_x": 6})
+print("Solution with Derivatives:", s)
 
-# # Linear
-# print("===== 2 + 2 =========")
-# # equations = ["2 * x + 3 * y_x"]
-# equations = ["2 * x + 3 * y_x", "5 * z + 4 * z_x"]
-# targets = ["z_x", "a_x"]
-# calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x", "a", "a_x"], is_silent=is_silent) 
-# calc.derive_orgvars()
-# print("calc.equations", calc.equations)
-# print("calc.variables", calc.variables)
-# s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
-# print("Solution with Derivatives:", s)
+# Linear
+print("===== 2 + 2 =========")
+# equations = ["2 * x + 3 * y_x"]
+equations = ["2 * x + 3 * y_x", "5 * z + 4 * z_x"]
+targets = ["z_x", "a_x"]
+calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x", "a", "a_x"], is_silent=is_silent) 
+calc.derive_orgvars()
+print("calc.equations", calc.equations)
+print("calc.variables", calc.variables)
+s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
+print("Solution with Derivatives:", s)
 
