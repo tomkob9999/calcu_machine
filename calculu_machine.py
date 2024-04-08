@@ -1,9 +1,9 @@
 # calculu_machine
 #
 # Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.2.2
+# Version: 1.2.3
 # Author: Tomio Kobayashi
-# Last Update: 2024/4/08
+# Last Update: 2024/4/09
 
 import sympy as sp
 import numpy as np
@@ -49,7 +49,6 @@ class calculu_machine:
         unknowns = [t for t in self.variables if t not in knowns]
         
         try:
-#             print("Solving for", self.variables)
             solution = sp.solve(equations, self.variables)
             if len(solution) == 0:
                 print("No solution found")
@@ -179,64 +178,76 @@ class calculu_machine:
 
         total_notyet = True
         for i, func in enumerate(function_sets):
-            new_variables = []
-            new_equations = []
-            add_equation = any([str(f) in tot_deriv_input for f in func[0]])
             solution = sp.solve(self.equations, func[1]) 
             str_sol = str(solution).replace("[", "").replace("]", "")
-            gradiants = {}
-            not_too_complex = True
             if str_sol != "":
                 fff = sp.sympify(str_sol)
                 if isinstance(fff, dict):
                     for k, v in fff.items():
-                        sol = sp.Eq(v, func[1][0])
-                        # Extract LHS and separate into terms
-                        lhs = sol.lhs
-                        terms = lhs.as_ordered_terms()
-                        integs = []
-                        for term in terms:
-                            t = str(term)
-                            eqs = []
-                            this_var = str(func[1][0]).split("_")[1]
-                            for d in derivs:
-                                if str(d) in t:
-                                    this_var = str(d).split("_")[0]
-                                    t = str(t).replace(str(d)+"*", "").replace("*"+str(d), "")
-                                    break
-                        
-                            integs.append(str(sp.integrate(sp.sympify(t), sp.sympify(this_var))))
-                        
-                        integs = list(set(integs))
-                        integ_str = "+".join(integs)
-                        if eqs_added < num_eqs:
-                            self.equations_str.append(integ_str)
-                            self.equations.append(sp.Eq(sp.sympify(integ_str), sp.sympify(str(func[1][0]).split("_")[0])))
-                            eqs_added += 1
+                        for oup in func[1]:
+                            sol = sp.Eq(v, oup)
+                            # Extract LHS and separate into terms
+                            lhs = sol.lhs
+                            terms = lhs.as_ordered_terms()
+                            integs = []
+                            for term in terms:
+                                t = str(term)
+                                eqs = []
+                                this_var = str(func[1][0]).split("_")[1]
+                                for d in derivs:
+                                    if str(d) in t:
+                                        this_var = str(d).split("_")[0]
+                                        t = str(t).replace(str(d)+"*", "").replace("*"+str(d), "")
+                                        break
+
+                                integs.append(str(sp.integrate(sp.sympify(t), sp.sympify(this_var))))
+
+                            integs = list(set(integs))
+                            integ_str = "+".join(integs)
+                            if eqs_added < num_eqs:
+                                self.equations_str.append(integ_str)
+                                self.equations.append(sp.Eq(sp.sympify(integ_str), sp.sympify(str(func[1][0]).split("_")[0])))
+                                eqs_added += 1
              
 
             
 is_silent = False          
 
-# Linear
-print("===== 3 + 1 =========")
-# equations = ["a * x + b"]
-equations = ["3 * a + 4 * x + 5 * b"]
-# equations = ["3 * a + 4 * x + 5 * b**2"]
-targets = ["y"]
-calc = calculu_machine(equations, targets, ["a", "b", "x", "y"], is_silent=is_silent) 
-s = calc.solve_function({"a": 3, "x": 3, "y":5})
-print("Solution:", s)
-calc.derive_derivatives("a")
+# # Linear
+# print("===== 3 + 1 =========")
+# # equations = ["a * x + b"]
+# equations = ["3 * a + 4 * x + 5 * b"]
+# # equations = ["3 * a + 4 * x + 5 * b**2"]
+# targets = ["y"]
+# calc = calculu_machine(equations, targets, ["a", "b", "x", "y"], is_silent=is_silent) 
+# s = calc.solve_function({"a": 3, "x": 3, "y":5})
+# print("Solution:", s)
 # calc.derive_derivatives("a")
-# calc.derive_derivatives("a")
-# s = calc.solve_function({"a": 3, "x": 3, "y":5, "x": 3, "y":5})
+# # calc.derive_derivatives("a")
+# # calc.derive_derivatives("a")
+# # s = calc.solve_function({"a": 3, "x": 3, "y":5, "x": 3, "y":5})
+# # print("Solution with Derivatives:", s)
+
+# # Linear
+# print("===== 2 + 1 =========")
+# equations = ["2 * x + 3 * y_x"]
+# targets = ["z_x"]
+# calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x"], is_silent=is_silent) 
+# calc.derive_orgvars()
+# print("calc.equations", calc.equations)
+# print("calc.variables", calc.variables)
+# s = calc.solve_function({"y": 3, "y_x": 2, "z_x": 6})
 # print("Solution with Derivatives:", s)
 
 # Linear
-print("===== 2 + 1 =========")
-equations = ["2 * x + 3 * y_x"]
-targets = ["z_x"]
-calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x"], is_silent=is_silent) 
+print("===== 2 + 2 =========")
+# equations = ["2 * x + 3 * y_x"]
+equations = ["2 * x + 3 * y_x", "5 * z + 4 * z_x"]
+targets = ["z_x", "a_x"]
+calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x", "a", "a_x"], is_silent=is_silent) 
 calc.derive_orgvars()
 print("calc.equations", calc.equations)
+print("calc.variables", calc.variables)
+s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
+print("Solution with Derivatives:", s)
+
