@@ -1,9 +1,9 @@
 # calculu_machine
 #
 # Description: build system of differential equations and then solve
-# Version: 1.2.5
+# Version: 1.2.6
 # Author: Tomio Kobayashi
-# Last Update: 2024/4/09
+# Last Update: 2024/4/10
 
 import sympy as sp
 import numpy as np
@@ -33,6 +33,18 @@ class calculu_machine:
 
         # Otherwise, chop the string after the last "_"
         chopped_string = string[:last_underscore_index]
+        return chopped_string
+
+    def chop_before_last_underscore(string):
+        # Find the index of the last "_"
+        last_underscore_index = string.rfind("_")
+
+        # If no "_" found or it's the last character, return the original string
+        if last_underscore_index == -1 or last_underscore_index == len(string) - 1:
+            return string
+
+        # Otherwise, chop the string after the last "_"
+        chopped_string = string[last_underscore_index+1:]
         return chopped_string
 
 
@@ -197,10 +209,17 @@ class calculu_machine:
                             for term in terms:
                                 t = str(term)
                                 eqs = []
-                                this_var = str(func[1][0]).split("_")[1]
+#                                 this_var = str(func[1][0]).split("_")[1]
+#                                 this_var = str(oup).split("_")[1]
+                                this_var = calculu_machine.chop_before_last_underscore(str(oup))
+        
                                 for d in derivs:
                                     if str(d) in t:
-                                        this_var = str(d).split("_")[0]
+#                                         this_var = str(d).split("_")[0]
+                                        this_var = calculu_machine.chop_after_last_underscore(str(d))
+                                        
+                                        
+                                        
 #                                         t = str(t).replace(str(d)+"*", "").replace("*"+str(d), "")
                                         t = str(t).replace(str(d), "1")
                                         break
@@ -211,7 +230,9 @@ class calculu_machine:
                             integ_str = "+".join(integs)
                             if eqs_added < num_eqs:
                                 self.equations_str.append(integ_str)
-                                new_eq = sp.Eq(sp.sympify(integ_str), sp.sympify(str(oup).split("_")[0]))
+#                                 new_eq = sp.Eq(sp.sympify(integ_str), sp.sympify(str(oup).split("_")[0]))
+                                new_eq = sp.Eq(sp.sympify(integ_str), sp.sympify(calculu_machine.chop_after_last_underscore(str(oup))))
+                                
                                 try:
                                     if all([sp.solve(new_eq) != sp.solve(e) for e in self.equations]) and sp.solve(self.equations) != sp.solve(self.equations+[new_eq]):
                                         if not self.is_silent:
@@ -227,6 +248,17 @@ class calculu_machine:
 is_silent = False          
 
 print("===== 2 + 2 =========")
+equations = ["a + x + b", 
+             "2 * a + 3 * b + 4 * y"]
+targets = ["y", "x"]
+calc = calculu_machine(equations, targets, ["a", "b", "x", "y"], is_silent=is_silent) 
+s = calc.solve_function({"a": 3, "x": 3})
+print("Solution:", s)
+calc.derive()
+s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
+print("Solution with Derivatives:", s)
+
+print("===== 2 + 2 =========")
 # equations = ["a + x + b", 
 #              "2 * a + 3 * b + 4 * y"]
 # targets = ["y", "x"]
@@ -235,6 +267,8 @@ equations = ["-7*b_a/3 - 2",
 targets = ["x_a", "y_a"]
 calc = calculu_machine(equations, targets, ["a", "b", "x", "b_a", "x_a", "y_a"], is_silent=is_silent) 
 calc.anti_derive()
+s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
+print("Solution with Derivatives:", s)
 
 # # Linear
 # print("===== 3 + 1 =========")
