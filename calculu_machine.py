@@ -1,7 +1,7 @@
 # calculu_machine
 #
-# Description: automatically calculates total derivatives from system of equations and then solve
-# Version: 1.2.4
+# Description: build system of differential equations and then solve
+# Version: 1.2.5
 # Author: Tomio Kobayashi
 # Last Update: 2024/4/09
 
@@ -71,7 +71,8 @@ class calculu_machine:
                     sols.append(sol)
                 solution = sols
                 
-            return solution
+#             return solution
+            return [{k: v for k, v in s.items() if str(k) not in [str(k) for k in knowns]} for s in solution]
         
         except NotImplementedError as e:
             print(f"Caught an error: {e}")
@@ -79,7 +80,7 @@ class calculu_machine:
    
      
  
-    def derive_derivatives(self, tot_deriv_input=[], skip_if_multiple_solutions=False):
+    def derive(self, tot_deriv_input=[], skip_if_multiple_solutions=False):
 
         variables = sp.symbols(self.variables)
         num_knowns = len(self.variables) - len(self.equations)
@@ -167,7 +168,7 @@ class calculu_machine:
             not_too_complex = True
 
             
-    def derive_orgvars(self, tot_deriv_input=[], skip_if_multiple_solutions=False):
+    def anti_derive(self, tot_deriv_input=[], skip_if_multiple_solutions=False):
 
         num_eqs = len(self.equations)
         eqs_added = 0
@@ -240,7 +241,7 @@ targets = ["z"]
 calc = calculu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
 s = calc.solve_function({"x": 3, "y":5})
 print("Solution:", s)
-calc.derive_derivatives()
+calc.derive()
 s = calc.solve_function({"x": 3, "y":5, "y_x":2})
 print("Solution with Derivatives:", s)
 
@@ -251,7 +252,7 @@ print("===== 2 + 1 =========")
 equations = ["4*y_x + 3"]
 targets = ["z_x"]
 calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x"], is_silent=is_silent) 
-calc.derive_orgvars()
+calc.anti_derive()
 print("calc.equations", calc.equations)
 print("calc.variables", calc.variables)
 s = calc.solve_function({"x": 3, "y":5, "y_x":2})
@@ -263,7 +264,7 @@ print("===== 2 + 1 =========")
 equations = ["2 * x + 3 * y_x"]
 targets = ["z_x"]
 calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x"], is_silent=is_silent) 
-calc.derive_orgvars()
+calc.anti_derive()
 print("calc.equations", calc.equations)
 print("calc.variables", calc.variables)
 s = calc.solve_function({"y": 3, "y_x": 2, "z_x": 6})
@@ -275,9 +276,8 @@ print("===== 2 + 2 =========")
 equations = ["2 * x + 3 * y_x", "5 * z + 4 * z_x"]
 targets = ["z_x", "a_x"]
 calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x", "a", "a_x"], is_silent=is_silent) 
-calc.derive_orgvars()
+calc.anti_derive()
 print("calc.equations", calc.equations)
 print("calc.variables", calc.variables)
 s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
 print("Solution with Derivatives:", s)
-
