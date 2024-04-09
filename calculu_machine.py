@@ -211,12 +211,30 @@ class calculu_machine:
                             integ_str = "+".join(integs)
                             if eqs_added < num_eqs:
                                 self.equations_str.append(integ_str)
-                                self.equations.append(sp.Eq(sp.sympify(integ_str), sp.sympify(str(func[1][0]).split("_")[0])))
-                                eqs_added += 1
-             
-
+                                new_eq = sp.Eq(sp.sympify(integ_str), sp.sympify(str(oup).split("_")[0]))
+                                try:
+                                    if all([sp.solve(new_eq) != sp.solve(e) for e in self.equations]) and sp.solve(self.equations) != sp.solve(self.equations+[new_eq]):
+                                        if not self.is_silent:
+                                            print("*")
+                                            print("New Equation:", new_eq)
+                                            self.equations.append(new_eq)
+                                            eqs_added += 1
+                                            
+                                except NotImplementedError as e:
+                                    pass
+            
             
 is_silent = False          
+
+print("===== 2 + 2 =========")
+# equations = ["a + x + b", 
+#              "2 * a + 3 * b + 4 * y"]
+# targets = ["y", "x"]
+equations = ["-7*b_a/3 - 2", 
+             "-4*b_a/3 - 1"]
+targets = ["x_a", "y_a"]
+calc = calculu_machine(equations, targets, ["a", "b", "x", "b_a", "x_a", "y_a"], is_silent=is_silent) 
+calc.anti_derive()
 
 # # Linear
 # print("===== 3 + 1 =========")
@@ -234,50 +252,50 @@ is_silent = False
 # s = calc.solve_function({"a": 3, "x": 3, "y":5})
 # print("Solution with Derivatives:", s)
 
-# Linear
-print("===== 2 + 1 =========")
-equations = ["3 * x + 4 * y"]
-targets = ["z"]
-calc = calculu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
-s = calc.solve_function({"x": 3, "y":5})
-print("Solution:", s)
-calc.derive()
-s = calc.solve_function({"x": 3, "y":5, "y_x":2})
-print("Solution with Derivatives:", s)
+# # Linear
+# print("===== 2 + 1 =========")
+# equations = ["3 * x + 4 * y"]
+# targets = ["z"]
+# calc = calculu_machine(equations, targets, ["x", "y", "z"], is_silent=is_silent) 
+# s = calc.solve_function({"x": 3, "y":5})
+# print("Solution:", s)
+# calc.derive()
+# s = calc.solve_function({"x": 3, "y":5, "y_x":2})
+# print("Solution with Derivatives:", s)
 
-# Eq(4*y_x + 3, z_x)
+# # Eq(4*y_x + 3, z_x)
 
-# Linear
-print("===== 2 + 1 =========")
-equations = ["4*y_x + 3"]
-targets = ["z_x"]
-calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x"], is_silent=is_silent) 
-calc.anti_derive()
-print("calc.equations", calc.equations)
-print("calc.variables", calc.variables)
-s = calc.solve_function({"x": 3, "y":5, "y_x":2})
-print("Solution with Derivatives:", s)
+# # Linear
+# print("===== 2 + 1 =========")
+# equations = ["4*y_x + 3"]
+# targets = ["z_x"]
+# calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x"], is_silent=is_silent) 
+# calc.anti_derive()
+# print("calc.equations", calc.equations)
+# print("calc.variables", calc.variables)
+# s = calc.solve_function({"x": 3, "y":5, "y_x":2})
+# print("Solution with Derivatives:", s)
 
 
-# Linear
-print("===== 2 + 1 =========")
-equations = ["2 * x + 3 * y_x"]
-targets = ["z_x"]
-calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x"], is_silent=is_silent) 
-calc.anti_derive()
-print("calc.equations", calc.equations)
-print("calc.variables", calc.variables)
-s = calc.solve_function({"y": 3, "y_x": 2, "z_x": 6})
-print("Solution with Derivatives:", s)
-
-# Linear
-print("===== 2 + 2 =========")
+# # Linear
+# print("===== 2 + 1 =========")
 # equations = ["2 * x + 3 * y_x"]
-equations = ["2 * x + 3 * y_x", "5 * z + 4 * z_x"]
-targets = ["z_x", "a_x"]
-calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x", "a", "a_x"], is_silent=is_silent) 
-calc.anti_derive()
-print("calc.equations", calc.equations)
-print("calc.variables", calc.variables)
-s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
-print("Solution with Derivatives:", s)
+# targets = ["z_x"]
+# calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x"], is_silent=is_silent) 
+# calc.anti_derive()
+# print("calc.equations", calc.equations)
+# print("calc.variables", calc.variables)
+# s = calc.solve_function({"y": 3, "y_x": 2, "z_x": 6})
+# print("Solution with Derivatives:", s)
+
+# # Linear
+# print("===== 2 + 2 =========")
+# # equations = ["2 * x + 3 * y_x"]
+# equations = ["2 * x + 3 * y_x", "5 * z + 4 * z_x"]
+# targets = ["z_x", "a_x"]
+# calc = calculu_machine(equations, targets, ["x", "y", "z", "z_x", "y_x", "a", "a_x"], is_silent=is_silent) 
+# calc.anti_derive()
+# print("calc.equations", calc.equations)
+# print("calc.variables", calc.variables)
+# s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
+# print("Solution with Derivatives:", s)
