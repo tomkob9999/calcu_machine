@@ -272,7 +272,7 @@ class calculu_machine:
         print("Variable set", self.variables)
         print("Equations set", self.equations)
             
-    def anti_derive(self, num_order=1, tot_deriv_input=[], skip_if_multiple_solutions=False):
+    def anti_derive(self, num_order=1):
 
         num_eqs = len(self.equations)
         eqs_added = 0
@@ -446,3 +446,4 @@ print("Solution with Derivatives:", s)
 # print("calc.variables", calc.variables)
 # # s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
 # # print("Solution with Derivatives:", s)
+
