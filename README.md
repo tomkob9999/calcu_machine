@@ -26,7 +26,10 @@ Higher drivatives can be calculated by executing derive_derivatives() method inc
 ![derives2](https://github.com/tomkob9999/calculu_machine/assets/96751911/6faa20e1-5957-41f7-96ec-1a659e70f7fe)
 
 
+### Other sample output using anti-derive()
 
+
+![calc](https://github.com/tomkob9999/calculu_machine/assets/96751911/3ecbe9c5-5394-4bf9-adc4-5a1878f2ef19)
 
 
 
