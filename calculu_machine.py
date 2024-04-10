@@ -1,7 +1,7 @@
 # calculu_machine
 #
 # Description: build system of differential equations and then solve
-# Version: 1.2.7
+# Version: 1.2.8
 # Author: Tomio Kobayashi
 # Last Update: 2024/4/10
 
@@ -223,12 +223,14 @@ class calculu_machine:
                             integ_str = "+".join(integs)
                             self.equations_str.append(integ_str)
                             new_eq = sp.Eq(sp.sympify(integ_str), sp.sympify(calculu_machine.chop_after_last_underscore(str(k))))
-                            print("ANTI-DERIVATED EQUATION:", new_eq)
+                            new_eq_str = str(new_eq.rhs) + " = " + str(new_eq.lhs)
+                            print("ANTI-DERIVATED EQUATION:", new_eq_str)
+#                             print("ANTI-DERIVATED EQUATION:", new_eq)
                             if eqs_added < num_eqs:
                                     if all([sp.solve(new_eq) != sp.solve(e) for e in self.equations]) and sp.solve(self.equations) != sp.solve(self.equations+[new_eq]):
                                         if not self.is_silent:
                                             print("*")
-                                            print("New Equation:", new_eq)
+                                            print("New Equation:", new_eq_str)
                                             print("*")
                                             self.equations.append(new_eq)
                                             eqs_added += 1
