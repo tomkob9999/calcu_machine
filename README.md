@@ -2,7 +2,7 @@
 
 (Experimental Lab)
 
-The library finds total derivatives (also partials as by-products) from multivariate system of equations of no derivatives.  Then it generates the system of differential equations by adding the total derivatives equations.  Then it solves them from given inputs.
+The library finds total derivatives (also partials as by-products) from multivariate system of non-linear equations of no derivatives.  Then it generates the system of non-linear differential equations by adding the total derivatives equations.  Then it solves them from given inputs.
 
 Sympy is used as the derivative calculation engine.  No integrals are used unlike regular differential equations.  Since integrals are inverse of derivatives, the system of equations calculates the inversions by its nature, and so in effect, it can solve the system of differential equations.
 
