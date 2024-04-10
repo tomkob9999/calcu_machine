@@ -265,7 +265,7 @@ class calculu_machine:
                                     print("*")
                             
             else:
-                print("total derivative equations be added to system as the derived equations had multiple solutions", new_equations)
+                print("total derivative equations cannot be added to system as the derived equations had multiple solutions", new_equations)
             not_too_complex = True
             
             
