@@ -1,7 +1,7 @@
 # calculu_machine
 #
 # Description: build system of differential equations and then solve
-# Version: 1.2.6
+# Version: 1.2.7
 # Author: Tomio Kobayashi
 # Last Update: 2024/4/10
 
@@ -200,50 +200,41 @@ class calculu_machine:
                 fff = sp.sympify(str_sol)
                 if isinstance(fff, dict):
                     for k, v in fff.items():
-                        for oup in func[1]:
-                            sol = sp.Eq(v, oup)
-                            # Extract LHS and separate into terms
-                            lhs = sol.lhs
-                            terms = lhs.as_ordered_terms()
-                            integs = []
-                            for term in terms:
-                                t = str(term)
-                                eqs = []
-#                                 this_var = str(func[1][0]).split("_")[1]
-#                                 this_var = str(oup).split("_")[1]
-                                this_var = calculu_machine.chop_before_last_underscore(str(oup))
-        
-                                for d in derivs:
-                                    if str(d) in t:
-#                                         this_var = str(d).split("_")[0]
-                                        this_var = calculu_machine.chop_after_last_underscore(str(d))
-                                        
-                                        
-                                        
-#                                         t = str(t).replace(str(d)+"*", "").replace("*"+str(d), "")
-                                        t = str(t).replace(str(d), "1")
-                                        break
+                        sol = sp.Eq(v, k)
+                        # Extract LHS and separate into terms
+                        lhs = sol.lhs
+                        terms = lhs.as_ordered_terms()
+                        integs = []
+                        for term in terms:
+                            t = str(term)
+                            eqs = []
+                            this_var = calculu_machine.chop_before_last_underscore(str(k))
 
-                                integs.append(str(sp.integrate(sp.sympify(t), sp.sympify(this_var))))
+                            for d in derivs:
+                                if str(d) in t:
+                                    this_var = calculu_machine.chop_after_last_underscore(str(d))
+                                    t = str(t).replace(str(d), "1")
+                                    break
 
-                            integs = list(set(integs))
-                            integ_str = "+".join(integs)
-                            if eqs_added < num_eqs:
-                                self.equations_str.append(integ_str)
-#                                 new_eq = sp.Eq(sp.sympify(integ_str), sp.sympify(str(oup).split("_")[0]))
-                                new_eq = sp.Eq(sp.sympify(integ_str), sp.sympify(calculu_machine.chop_after_last_underscore(str(oup))))
-                                
-                                try:
-                                    if all([sp.solve(new_eq) != sp.solve(e) for e in self.equations]) and sp.solve(self.equations) != sp.solve(self.equations+[new_eq]):
-                                        if not self.is_silent:
-                                            print("*")
-                                            print("New Equation:", new_eq)
-                                            self.equations.append(new_eq)
-                                            eqs_added += 1
-                                            
-                                except NotImplementedError as e:
-                                    pass
-            
+                            integs.append(str(sp.integrate(sp.sympify(t), sp.sympify(this_var))))
+
+                        integs = list(set(integs))
+                        integ_str = "+".join(integs)
+                        if eqs_added < num_eqs:
+                            self.equations_str.append(integ_str)
+                            new_eq = sp.Eq(sp.sympify(integ_str), sp.sympify(calculu_machine.chop_after_last_underscore(str(k))))
+
+                            try:
+                                if all([sp.solve(new_eq) != sp.solve(e) for e in self.equations]) and sp.solve(self.equations) != sp.solve(self.equations+[new_eq]):
+                                    if not self.is_silent:
+                                        print("*")
+                                        print("New Equation:", new_eq)
+                                        self.equations.append(new_eq)
+                                        eqs_added += 1
+
+                            except NotImplementedError as e:
+                                pass
+  
             
 is_silent = False          
 
@@ -333,3 +324,4 @@ print("Solution with Derivatives:", s)
 # print("calc.variables", calc.variables)
 # s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
 # print("Solution with Derivatives:", s)
+
