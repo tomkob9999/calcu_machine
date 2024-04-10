@@ -218,22 +218,23 @@ class calculu_machine:
 
                             integs.append(str(sp.integrate(sp.sympify(t), sp.sympify(this_var))))
 
-                        integs = list(set(integs))
-                        integ_str = "+".join(integs)
-                        if eqs_added < num_eqs:
+                        try:
+                            integs = list(set(integs))
+                            integ_str = "+".join(integs)
                             self.equations_str.append(integ_str)
                             new_eq = sp.Eq(sp.sympify(integ_str), sp.sympify(calculu_machine.chop_after_last_underscore(str(k))))
+                            print("ANTI-DERIVATED EQUATION:", new_eq)
+                            if eqs_added < num_eqs:
+                                    if all([sp.solve(new_eq) != sp.solve(e) for e in self.equations]) and sp.solve(self.equations) != sp.solve(self.equations+[new_eq]):
+                                        if not self.is_silent:
+                                            print("*")
+                                            print("New Equation:", new_eq)
+                                            print("*")
+                                            self.equations.append(new_eq)
+                                            eqs_added += 1
 
-                            try:
-                                if all([sp.solve(new_eq) != sp.solve(e) for e in self.equations]) and sp.solve(self.equations) != sp.solve(self.equations+[new_eq]):
-                                    if not self.is_silent:
-                                        print("*")
-                                        print("New Equation:", new_eq)
-                                        self.equations.append(new_eq)
-                                        eqs_added += 1
-
-                            except NotImplementedError as e:
-                                pass
+                        except NotImplementedError as e:
+                            pass
   
             
 is_silent = False          
@@ -324,4 +325,3 @@ print("Solution with Derivatives:", s)
 # print("calc.variables", calc.variables)
 # s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
 # print("Solution with Derivatives:", s)
-
