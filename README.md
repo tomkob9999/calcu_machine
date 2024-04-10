@@ -4,9 +4,9 @@
 
 The library finds total derivatives (also partials as by-products) from multivariate system of non-linear equations of no derivatives.  Then it generates the system of non-linear differential equations by adding the total derivatives equations.  Then it solves them from given inputs.
 
-Sympy is used as the derivative calculation engine.  No integrals are used unlike regular differential equations.  Since integrals are inverse of derivatives, the system of equations calculates the inversions by its nature, and so in effect, it can solve the system of differential equations.
+Sympy is used as the derivative calculation engine.  Integrals are used to find anti-derivatives from derivatives.  When solving equations, since integrals are inverse of derivatives, the system of equations calculates the inversions by its nature, and so in effect, it can solve the system of differential equations.
 
-Not all derivatives seem to be included in total derivatives.  They cannot be added in the system as they violate independence.  But they can be derived by simple calculations.  Given dx/dy, dy/dx = 1/(dx/dy).  Given dx/dy and dz/dy, dx/dz = (dx/dy)/(dz/dy)  The approach seems simple and practical.  Once the total derivativess are derived, the rest is all pure good old algebra with system of equations.
+Not all derivatives are included in total derivatives.  They cannot be added in the system as they violate independence law.  But they can be derived by simple calculations.  Given dx/dy, dy/dx = 1/(dx/dy).  Given dx/dy and dz/dy, dx/dz = (dx/dy)/(dz/dy)  The approach seems simple and practical.  Once the total derivativess are derived, the rest is all pure algebra with system of equations.
 
 Observed patterns:
 
@@ -14,9 +14,9 @@ Observed patterns:
 |:----------|:----------|:----------|:----------|:----------|:----------|:----------|
 | |  | = (2) | = (1)-(2) | = {(1) choose (2)} |  = (2) * (3) * (4) | = (2)|
 
-Note: the number of total derivative equations match the number of the original equations.  While the total functions can be derivated for each output of each function, only the number of the original equations of them are independent and they appear in each function.  Therefore, total derivatives from the first function are added to the system.
+Note: the number of total derivative equations match the number of the original equations.  While the total derivatives can be derivated for each output of each function, only the number of the original equations of them are independent and they appear in each function.  Therefore, total derivatives from the first function are added to the system usually unless it fails and search from the rest.
 
-Higher drivatives can be calculated by executing derive_derivatives() method incrementally as the privious derivatives are merely treated as scalers.
+Higher drivatives and lower anti-derivatives can be found by executing derive() and anti_derive() methods incrementally as the privious derivatives are merely treated as scalers.
 
 
 ### Sample Execution
