@@ -1,9 +1,9 @@
 # calculu_machine
 #
 # Description: build system of non-linear differential equations and then solve
-# Version: 1.3.0
+# Version: 1.3.1
 # Author: Tomio Kobayashi
-# Last Update: 2024/4/11
+# Last Update: 2024/4/12
 
 import sympy as sp
 import numpy as np
@@ -269,8 +269,9 @@ class calculu_machine:
             not_too_complex = True
             
             
-        print("Variable set", self.variables)
-        print("Equations set", self.equations)
+        if not self.is_silent:
+            print("Variable set", self.variables)
+            print("Equations set", self.equations)
             
     def anti_derive(self, num_order=1):
 
@@ -326,37 +327,39 @@ class calculu_machine:
                             self.equations_str.append(integ_str)
                             new_eq = sp.Eq(sp.sympify(integ_str), sp.sympify(calculu_machine.chop_after_last_underscore(str(k))))
                             new_eq_str = str(new_eq.rhs) + " = " + str(new_eq.lhs)
-                            print("ANTI-DERIVATED EQUATION:", new_eq_str)
+                            if not self.is_silent:
+                                print("ANTI-DERIVATED EQUATION:", new_eq_str)
                             if eqs_added < num_eqs:
                                 if all([sp.solve(new_eq) != sp.solve(e) for e in self.equations]) and sp.solve(self.equations) != sp.solve(self.equations+[new_eq]):
                                     if not self.is_silent:
                                         print("*")
                                         print("New equation added to the system:", new_eq_str)
                                         print("*")
-                                        self.equations.append(new_eq)
-                                        eqs_added += 1
+                                    self.equations.append(new_eq)
+                                    eqs_added += 1
 
                         except NotImplementedError as e:
                             pass
   
-        print("Variable set", self.variables)
-        print("Equations set", self.equations)
+        if not self.is_silent:
+            print("Variable set", self.variables)
+            print("Equations set", self.equations)
             
         
         
 is_silent = False          
 
-print("===== 2 + 2 =========")
-equations = ["a + x + b", 
-             "2 * a + 3 * b + 4 * y"]
-targets = ["y", "x"]
-calc = calculu_machine(equations, targets, ["a", "b", "x", "y"], is_silent=is_silent) 
-s = calc.solve_function({"a": 3, "x": 3})
-print("Solution:", s)
-calc.derive(["a"])
-# calc.derive()
-s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
-print("Solution with Derivatives:", s)
+# print("===== 2 + 2 =========")
+# equations = ["a + x + b", 
+#              "2 * a + 3 * b + 4 * y"]
+# targets = ["y", "x"]
+# calc = calculu_machine(equations, targets, ["a", "b", "x", "y"], is_silent=is_silent) 
+# s = calc.solve_function({"a": 3, "x": 3})
+# print("Solution:", s)
+# calc.derive(["a"])
+# # calc.derive()
+# s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
+# print("Solution with Derivatives:", s)
 
 print("===== 2 + 2 =========")
 # equations = ["a + x + b", 
@@ -370,17 +373,17 @@ calc.anti_derive()
 s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
 print("Solution with Derivatives:", s)
 
-print("===== 2 + 2 =========")
-# equations = ["a + x + b", 
-#              "2 * a + 3 * b + 4 * y"]
-# targets = ["y", "x"]
-equations = ["-7*b_a_a/3 - 2", 
-             "-4*b_a_a/3 - 1"]
-targets = ["x_a_a", "y_a_a"]
-calc = calculu_machine(equations, targets, ["a", "b", "x", "b_a", "x_a", "y_a", "b_a_a", "x_a_a", "y_a_a"], is_silent=is_silent) 
-calc.anti_derive(num_order=2)
-s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
-print("Solution with Derivatives:", s)
+# print("===== 2 + 2 =========")
+# # equations = ["a + x + b", 
+# #              "2 * a + 3 * b + 4 * y"]
+# # targets = ["y", "x"]
+# equations = ["-7*b_a_a/3 - 2", 
+#              "-4*b_a_a/3 - 1"]
+# targets = ["x_a_a", "y_a_a"]
+# calc = calculu_machine(equations, targets, ["a", "b", "x", "b_a", "x_a", "y_a", "b_a_a", "x_a_a", "y_a_a"], is_silent=is_silent) 
+# calc.anti_derive(num_order=2)
+# s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
+# print("Solution with Derivatives:", s)
 
 
 # # Linear
@@ -446,4 +449,3 @@ print("Solution with Derivatives:", s)
 # print("calc.variables", calc.variables)
 # # s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
 # # print("Solution with Derivatives:", s)
-
