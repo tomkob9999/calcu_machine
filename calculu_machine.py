@@ -1,7 +1,7 @@
 # calculu_machine
 #
 # Description: build system of non-linear differential equations and then solve
-# Version: 1.3.3
+# Version: 1.3.4
 # Author: Tomio Kobayashi
 # Last Update: 2024/4/16
 
@@ -18,7 +18,12 @@ class calculu_machine:
         if "_" in target:
             if calculu_machine.chop_after_last_underscore(target) in s_vars:
                 if calculu_machine.chop_before_last_underscore(target) in s_vars:
-                    return [calculu_machine.chop_before_last_underscore(target) + "/zz", "1/(" + s.replace(calculu_machine.chop_before_last_underscore(target), "zz") + ")"], ["tt_" + calculu_machine.chop_before_last_underscore(target), "tt_" + calculu_machine.chop_after_last_underscore(target)]
+#                     return [calculu_machine.chop_before_last_underscore(target) + "/zz", "1/(" + s.replace(calculu_machine.chop_before_last_underscore(target), "zz") + ")"], ["tt_" + calculu_machine.chop_before_last_underscore(target), "tt_" + calculu_machine.chop_after_last_underscore(target)]
+                    print(calculu_machine.chop_before_last_underscore(target) + "/zz")
+                    print("1/(" + s.replace(calculu_machine.chop_before_last_underscore(target), "zz") + ")")
+                    print("s", s)
+                    print("ss", s.replace(calculu_machine.chop_before_last_underscore(target), "1"))
+                    return [s.replace(calculu_machine.chop_after_last_underscore(target), "1") + "*1/zz", "1/(" + s.replace(calculu_machine.chop_before_last_underscore(target), "1") + ")*1/zz"], ["tt_" + calculu_machine.chop_before_last_underscore(target), "tt_" + calculu_machine.chop_after_last_underscore(target)]
                 else:
                     return ["1/(" + s + ")"], [calculu_machine.chop_before_last_underscore(target) + "_" + calculu_machine.chop_after_last_underscore(target)]
             else:
@@ -49,7 +54,7 @@ class calculu_machine:
         ee = []
         tt = []
         for i, e in enumerate(equations_str):
-            eee, ttt = conv_equation(e, targets[i])
+            eee, ttt = calculu_machine.conv_equation(e, targets[i])
             ee += eee
             tt += ttt
             
@@ -504,3 +509,4 @@ print("Solution with Derivatives:", s)
 # print("calc.variables", calc.variables)
 # # s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
 # # print("Solution with Derivatives:", s)
+
