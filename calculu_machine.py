@@ -19,10 +19,6 @@ class calculu_machine:
             if calculu_machine.chop_after_last_underscore(target) in s_vars:
                 if calculu_machine.chop_before_last_underscore(target) in s_vars:
 #                     return [calculu_machine.chop_before_last_underscore(target) + "/zz", "1/(" + s.replace(calculu_machine.chop_before_last_underscore(target), "zz") + ")"], ["tt_" + calculu_machine.chop_before_last_underscore(target), "tt_" + calculu_machine.chop_after_last_underscore(target)]
-                    print(calculu_machine.chop_before_last_underscore(target) + "/zz")
-                    print("1/(" + s.replace(calculu_machine.chop_before_last_underscore(target), "zz") + ")")
-                    print("s", s)
-                    print("ss", s.replace(calculu_machine.chop_before_last_underscore(target), "1"))
                     return [s.replace(calculu_machine.chop_after_last_underscore(target), "1") + "*1/zz", "1/(" + s.replace(calculu_machine.chop_before_last_underscore(target), "1") + ")*1/zz"], ["tt_" + calculu_machine.chop_before_last_underscore(target), "tt_" + calculu_machine.chop_after_last_underscore(target)]
                 else:
                     return ["1/(" + s + ")"], [calculu_machine.chop_before_last_underscore(target) + "_" + calculu_machine.chop_after_last_underscore(target)]
@@ -57,14 +53,11 @@ class calculu_machine:
             eee, ttt = calculu_machine.conv_equation(e, targets[i])
             ee += eee
             tt += ttt
-            
-        print("ee", ee)
-        print("tt", tt)
         
         equations_str = ee
         targets = tt
         self.variables = variables if len(variables) > 0 else calculu_machine.find_variables(equations_str+targets)
-        print("self.variables", self.variables)
+#         print("self.variables", self.variables)
         self.equations_str = equations_str
         self.equations = [sp.Eq(sp.sympify(eq), sp.sympify(targets[i])) for i, eq in enumerate(self.equations_str)]
         self.is_silent = is_silent
@@ -509,4 +502,3 @@ print("Solution with Derivatives:", s)
 # print("calc.variables", calc.variables)
 # # s = calc.solve_function({"y_x": 2, "a_x": 6, "z": 5})
 # # print("Solution with Derivatives:", s)
-
