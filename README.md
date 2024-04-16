@@ -18,6 +18,12 @@ Note: the number of total derivative equations match the number of the original 
 
 Higher drivatives and lower anti-derivatives can be found by executing derive() and anti_derive() methods incrementally as the privious derivatives are merely treated as scalers.
 
+Equations get converted as follows to perform anti-derivatives.
+
+dy/dx = 2 * y -> dx/dy = 1/(2 * y)
+<br>
+dy/dx = x * y -> dtt/dx = x/zz, dtt/dy = 1/(y * zz)
+
 
 ### Sample Execution
 
