@@ -1,9 +1,9 @@
 # calculu_machine
 #
 # Description: build system of non-linear differential equations and then solve
-# Version: 1.3.2
+# Version: 1.3.3
 # Author: Tomio Kobayashi
-# Last Update: 2024/4/13
+# Last Update: 2024/4/16
 
 import sympy as sp
 import numpy as np
@@ -12,6 +12,18 @@ from itertools import combinations
 import re
 
 class calculu_machine:
+    
+    def conv_equation(s, target):
+        s_vars = calculu_machine.find_variables([s])
+        if "_" in target:
+            if calculu_machine.chop_after_last_underscore(target) in s_vars:
+                if calculu_machine.chop_before_last_underscore(target) in s_vars:
+                    return [calculu_machine.chop_before_last_underscore(target) + "/zz", "1/(" + s.replace(calculu_machine.chop_before_last_underscore(target), "zz") + ")"], ["tt_" + calculu_machine.chop_before_last_underscore(target), "tt_" + calculu_machine.chop_after_last_underscore(target)]
+                else:
+                    return ["1/(" + s + ")"], [calculu_machine.chop_before_last_underscore(target) + "_" + calculu_machine.chop_after_last_underscore(target)]
+            else:
+                return [s], [target]
+
 
     def find_variables(e):
 
@@ -34,8 +46,20 @@ class calculu_machine:
     def __init__(self, equations_str, targets, variables=[], is_silent=False):
         
         
+        ee = []
+        tt = []
+        for i, e in enumerate(equations_str):
+            eee, ttt = conv_equation(e, targets[i])
+            ee += eee
+            tt += ttt
+            
+        print("ee", ee)
+        print("tt", tt)
+        
+        equations_str = ee
+        targets = tt
         self.variables = variables if len(variables) > 0 else calculu_machine.find_variables(equations_str+targets)
-#         print("self.variables", self.variables)
+        print("self.variables", self.variables)
         self.equations_str = equations_str
         self.equations = [sp.Eq(sp.sympify(eq), sp.sympify(targets[i])) for i, eq in enumerate(self.equations_str)]
         self.is_silent = is_silent
@@ -368,31 +392,41 @@ class calculu_machine:
         
 is_silent = False          
 
-print("===== 2 + 2 =========")
-equations = ["a + x + b", 
-             "2 * a + 3 * b + 4 * y"]
-targets = ["y", "x"]
-# calc = calculu_machine(equations, targets, ["a", "b", "x", "y"], is_silent=is_silent) 
+
+equations = ["2-y"]
+targets = ["y_t"]
 calc = calculu_machine(equations, targets, is_silent=is_silent) 
-s = calc.solve_function({"a": 3, "x": 3})
-print("Solution:", s)
-calc.derive(["a"])
-# calc.derive()
-s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
+calc.anti_derive()
+s = calc.solve_function({"t": 1})
 print("Solution with Derivatives:", s)
 
-print("===== 2 + 2 =========")
+
+
+# print("===== 2 + 2 =========")
 # equations = ["a + x + b", 
 #              "2 * a + 3 * b + 4 * y"]
 # targets = ["y", "x"]
-equations = ["-7*b_a/3 - 2", 
-             "-4*b_a/3 - 1"]
-targets = ["x_a", "y_a"]
-# calc = calculu_machine(equations, targets, ["a", "b", "x", "b_a", "x_a", "y_a"], is_silent=is_silent) 
-calc = calculu_machine(equations, targets, is_silent=is_silent) 
-calc.anti_derive()
-s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
-print("Solution with Derivatives:", s)
+# # calc = calculu_machine(equations, targets, ["a", "b", "x", "y"], is_silent=is_silent) 
+# calc = calculu_machine(equations, targets, is_silent=is_silent) 
+# s = calc.solve_function({"a": 3, "x": 3})
+# print("Solution:", s)
+# calc.derive(["a"])
+# # calc.derive()
+# s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
+# print("Solution with Derivatives:", s)
+
+# # print("===== 2 + 2 =========")
+# # equations = ["a + x + b", 
+# #              "2 * a + 3 * b + 4 * y"]
+# # targets = ["y", "x"]
+# equations = ["-7*b_a/3 - 2", 
+#              "-4*b_a/3 - 1"]
+# targets = ["x_a", "y_a"]
+# # calc = calculu_machine(equations, targets, ["a", "b", "x", "b_a", "x_a", "y_a"], is_silent=is_silent) 
+# calc = calculu_machine(equations, targets, is_silent=is_silent) 
+# calc.anti_derive()
+# s = calc.solve_function({"a": 3, "x": 3, "x_a": 1})
+# print("Solution with Derivatives:", s)
 
 # print("===== 2 + 2 =========")
 # # equations = ["a + x + b", 
@@ -434,7 +468,7 @@ print("Solution with Derivatives:", s)
 # s = calc.solve_function({"x": 3, "y":5, "y_x":2})
 # print("Solution with Derivatives:", s)
 
-# # Eq(4*y_x + 3, z_x)
+# Eq(4*y_x + 3, z_x)
 
 # # Linear
 # print("===== 2 + 1 =========")
