@@ -1,9 +1,9 @@
 # calculu_machine
 #
 # Description: build system of non-linear differential equations and then solve
-# Version: 1.3.5
+# Version: 1.3.6
 # Author: Tomio Kobayashi
-# Last Update: 2024/5/14
+# Last Update: 2024/5/15
 
 import sympy as sp
 import numpy as np
@@ -15,7 +15,9 @@ class calculu_machine:
     
     def conv_equation(s, target):
         s_vars = calculu_machine.find_variables([s])
+#         print("s_vars", s_vars)
         if "_" in target:
+#             print("_ is in")
             if calculu_machine.chop_after_last_underscore(target) in s_vars:
                 if calculu_machine.chop_before_last_underscore(target) in s_vars:
 #                     return [calculu_machine.chop_before_last_underscore(target) + "/zz", "1/(" + s.replace(calculu_machine.chop_before_last_underscore(target), "zz") + ")"], ["tt_" + calculu_machine.chop_before_last_underscore(target), "tt_" + calculu_machine.chop_after_last_underscore(target)]
@@ -24,6 +26,8 @@ class calculu_machine:
                     return ["1/(" + s + ")"], [calculu_machine.chop_before_last_underscore(target) + "_" + calculu_machine.chop_after_last_underscore(target)]
             else:
                 return [s], [target]
+        else:
+            return [s], [target]
 
 
     def find_variables(e):
@@ -50,6 +54,9 @@ class calculu_machine:
         ee = []
         tt = []
         for i, e in enumerate(equations_str):
+#             print("e", e)
+#             print("targets", targets)
+#             print("targets[i]", targets[i])
             eee, ttt = calculu_machine.conv_equation(e, targets[i])
             ee += eee
             tt += ttt
